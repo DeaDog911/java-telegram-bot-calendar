@@ -44,6 +44,58 @@ public class InlineCalendarBuilder {
         this.showFullMonthName = false;
     }
 
+    /**
+     * Build hour selection keyboard (0-23 hours, 4 columns x 6 rows)
+     */
+    public synchronized InlineKeyboardMarkup buildHourPicker() {
+        final InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        final List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+
+        // 4 columns: 0-23 hours
+        for (int rowStart = 0; rowStart < 24; rowStart += 4) {
+            List<InlineKeyboardButton> inlineKeyboardButtons = new ArrayList<>();
+            
+            for (int col = 0; col < 4 && (rowStart + col) < 24; col++) {
+                int hour = rowStart + col;
+                final InlineKeyboardButton in = new InlineKeyboardButton();
+                in.setText(DateTimeUtil.convertHourToString(hour));
+                in.setCallbackData(InlineCalendarCommandUtil.CALENDAR_COMMAND_PREFIX + InlineCalendarCommandUtil.TIME_HOUR + DateTimeUtil.convertHourToString(hour));
+                inlineKeyboardButtons.add(in);
+            }
+            
+            rows.add(inlineKeyboardButtons);
+        }
+
+        inlineKeyboardMarkup.setKeyboard(rows);
+        return inlineKeyboardMarkup;
+    }
+
+    /**
+     * Build minute selection keyboard (0-59 minutes, 6 columns x 10 rows)
+     */
+    public synchronized InlineKeyboardMarkup buildMinutePicker() {
+        final InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        final List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+
+        // 6 columns: 0-59 minutes
+        for (int rowStart = 0; rowStart < 60; rowStart += 6) {
+            List<InlineKeyboardButton> inlineKeyboardButtons = new ArrayList<>();
+            
+            for (int col = 0; col < 6 && (rowStart + col) < 60; col++) {
+                int minute = rowStart + col;
+                final InlineKeyboardButton in = new InlineKeyboardButton();
+                in.setText(DateTimeUtil.convertMinuteToString(minute));
+                in.setCallbackData(InlineCalendarCommandUtil.CALENDAR_COMMAND_PREFIX + InlineCalendarCommandUtil.TIME_MINUTE + DateTimeUtil.convertMinuteToString(minute));
+                inlineKeyboardButtons.add(in);
+            }
+            
+            rows.add(inlineKeyboardButtons);
+        }
+
+        inlineKeyboardMarkup.setKeyboard(rows);
+        return inlineKeyboardMarkup;
+    }
+
     public synchronized InlineKeyboardMarkup build(final Update update) {
 
         LocalDate dateForCalendar = InlineCalendarCommandUtil.extractNavigationDate(update);
